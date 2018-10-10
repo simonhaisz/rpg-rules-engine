@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "lib": [
+            "es2017",
+        ],
+        "target": "es5",
+        "strict": true,
+        "sourceMap": true,
+        "downlevelIteration": true,
+        "outDir": "./out"
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
+}

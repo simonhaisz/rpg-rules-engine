@@ -1,0 +1,12 @@
+{
+    "name": "rpg-rules-engine",
+    "description": "Abstract rules engine for applying RPG rules to a situation.",
+    "version": "0.1.0",
+    "author": {
+        "email": "simonhaisz@gmail.com",
+        "name": "Simon Haisz"
+    },
+    "devDependencies": {
+        "typescript": "3.1.1"
+    }
+}

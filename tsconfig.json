@@ -2,13 +2,16 @@
     "compilerOptions": {
         "alwaysStrict": true,
         "lib": [
-            "es2017",
+            "esnext",
         ],
         "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
         "strict": true,
         "sourceMap": true,
         "downlevelIteration": true,
-        "outDir": "./out"
+        "outDir": "./out",
+        "skipLibCheck": false
     },
     "include": [
         "src/**/*.ts"

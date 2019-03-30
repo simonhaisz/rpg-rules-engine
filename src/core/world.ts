@@ -13,5 +13,5 @@ export const computeRange = (a: Location, b: Location): number => {
 };
 
 export interface IWorld {
-    getCharacters(): ICharacter[];
+    setup(): void;
 }

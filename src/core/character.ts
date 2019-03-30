@@ -1,15 +1,11 @@
-import { Location } from "./location";
-
-export type CharacterState = {
-    alive: boolean;
-    initiative: number;
-    canAct: boolean;
-    location: Location;
-};
+export enum CharacterType {
+    PC,
+    NPC
+}
 
 export interface ICharacter {
-    name: string;
-    getState(): CharacterState;
+    readonly type: CharacterType;
+    readonly name: string;
     performAction(): void;
     newRound(): void;
 }

@@ -1,3 +1,4 @@
+import { info } from "./log";
 import { System } from "./core/system";
 import { createWorld } from "./systems/sr3/world";
 import { GameMaster } from "./systems/sr3/game-master";
@@ -9,4 +10,5 @@ for ( ; ; ) {
         break;
     }
 }
-console.log(`${system} scenario finished`);
+
+info(`${system} scenario finished`, );

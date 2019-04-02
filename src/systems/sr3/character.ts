@@ -1,3 +1,4 @@
+import { info, debug } from "../../log";
 import { ICharacter, CharacterType } from "../../core/character";
 import { Location } from "../../core/location";
 import { Weapon, WeaponType } from "./weapon";
@@ -80,7 +81,7 @@ export class Character implements ICharacter {
     }
 
     logState() {
-        console.log(`name: ${this.name} physical:${this._damage.PhysicalBoxes} stun:${this._damage.StunBoxes}`);
+        debug(`name: ${this.name} physical:${this._damage.PhysicalBoxes} stun:${this._damage.StunBoxes}`);
     }
 
     newRound() {
@@ -88,7 +89,7 @@ export class Character implements ICharacter {
             return;
         }
         this._initiative = this.reaction + this.initiativeBonus + rollTotal(this.initiativeDice);
-        console.log(`name: ${this.name} rolled ${this._initiative} for initiative`)
+        debug(`name: ${this.name} rolled ${this._initiative} for initiative`)
     }
 
     newPhase() {
@@ -103,7 +104,7 @@ export class Character implements ICharacter {
     performAction() {
         const nearestOpponent = this.findNearestOpponent();
         if (nearestOpponent === null) {
-            console.log(`No opponents left, doing nothing`);
+            debug(`No opponents left, doing nothing`);
             return;
         }
         performRangedAttack(this, nearestOpponent, this.weapons[0]);
@@ -114,18 +115,18 @@ export class Character implements ICharacter {
         const result = rollSuccesses(this.attributes.Body, targetNumber);
         const damageLevel = decreaseDamageLevel(damage.level, result);
         if (damageLevel === DamageLevel.None) {
-            console.log(`'${this.name}' takes no damage`);
+            debug(`'${this.name}' takes no damage`);
             return;
         }
         const boxesOfDamage = getBoxesOfDamage(damageLevel);
         switch (damage.type) {
             case DamageType.Physical:
                 this._damage.PhysicalBoxes += boxesOfDamage;
-                console.log(`'${this.name}' takes ${boxesOfDamage} boxes of Physical damage`);
+                debug(`'${this.name}' takes ${boxesOfDamage} boxes of Physical damage`);
                 break;
             case DamageType.Stun:
                 this._damage.StunBoxes += boxesOfDamage;
-                console.log(`'${this.name}' takes ${boxesOfDamage} boxes of Stun damage`);
+                debug(`'${this.name}' takes ${boxesOfDamage} boxes of Stun damage`);
                 break;
         }
     }

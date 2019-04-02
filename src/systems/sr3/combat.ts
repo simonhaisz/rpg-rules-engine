@@ -1,3 +1,4 @@
+import { info, debug } from "../../log";
 import { Character } from "./character";
 import { computeRange } from "../../core/world";
 import { getTN } from "./range";
@@ -11,14 +12,14 @@ export function performRangedAttack(attacker: Character, defender: Character, we
     const skill = attacker.getSkill(weapon);
     const successes = rollSuccesses(skill, targetNumber);
     if (successes === 0) {
-        console.log(`'${attacker.name}' misses attack against '${defender.name}'`);
+        debug(`'${attacker.name}' misses attack against '${defender.name}'`);
         return;
     } else {
-        console.log(`'${attacker.name}' hits with ${successes} successes`);
+        debug(`'${attacker.name}' hits with ${successes} successes`);
     }
     const level = increaseDamageLevel(weapon.damage.level, successes);
     const damage = { ...weapon.damage, level };
-    console.log(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
+    debug(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
     defender.resistDamage({ ...weapon.damage, level });
 }
 

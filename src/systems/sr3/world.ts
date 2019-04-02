@@ -72,13 +72,11 @@ export function createWorld(): World {
     const runner = createRunner(world);
     const goon1 = createGoon(world, 1);
     const goon2 = createGoon(world, 2);
-    const goon3 = createGoon(world, 3);
 
     runner.move({ x: 0, y: 0, z: 0 });
 
-    goon1.move({ x: 5, y: 0, z: 0 });
-    goon2.move({ x: 10, y: 0, z: 0 });
-    goon3.move({ x: 15, y: 0, z: 0 });
+    goon1.move({ x: 10, y: 0, z: 0 });
+    goon2.move({ x: 50, y: 0, z: 0 });
 
 
     return world;

@@ -1,6 +1,6 @@
 export enum CharacterType {
-    PC,
-    NPC
+    PC = "PC",
+    NPC = "NPC"
 }
 
 export interface ICharacter {

@@ -32,10 +32,12 @@ export class Character implements ICharacter {
     readonly reaction: number;
     readonly initiativeBonus: number;
     readonly initiativeDice: number;
+    readonly combatPoolDice: number;
     readonly skills: Skills;
     readonly weapons: Weapon[];
     readonly armor: Armor;
     private _initiative = -1;
+    private _combatPool = -1;
     private _location: Location = { x: -1, y: -1, z: -1 };
     private _damage: DamageTrack = {
         PhysicalBoxes: 0,
@@ -50,6 +52,7 @@ export class Character implements ICharacter {
         this.reaction = Math.floor((attributes.Intelligence + attributes.Quickness) / 2);
         this.initiativeBonus = initiativeBonus;
         this.initiativeDice = initiativeDice;
+        this.combatPoolDice = Math.floor((attributes.Quickness + attributes.Intelligence + attributes.Willpower) /2);
         this.skills = skills;
         this.weapons = weapons;
         this.armor = armor;
@@ -89,6 +92,7 @@ export class Character implements ICharacter {
             return;
         }
         this._initiative = this.reaction + this.initiativeBonus + rollTotal(this.initiativeDice);
+        this._combatPool = this.combatPoolDice;
         debug(`name: ${this.name} rolled ${this._initiative} for initiative`)
     }
 
@@ -102,12 +106,24 @@ export class Character implements ICharacter {
     }
 
     performAction() {
+        if (this.weapons.length === 0) {
+            return;
+        }
         const nearestOpponent = this.findNearestOpponent();
         if (nearestOpponent === null) {
             debug(`No opponents left, doing nothing`);
             return;
         }
         performRangedAttack(this, nearestOpponent, this.weapons[0]);
+    }
+
+    dodge(attackSuccesses: number): number {
+        if (this._combatPool < 1) {
+            return 0;
+        }
+        const dodgeDice = Math.min(this._combatPool, Math.ceil(attackSuccesses / 2));
+        this._combatPool -= dodgeDice;
+        return rollSuccesses(dodgeDice, 4);
     }
 
     resistDamage(damage: Damage) {

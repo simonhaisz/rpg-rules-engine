@@ -1,14 +1,17 @@
-import { info } from "./log";
-import { System } from "./core/system";
-import { createWorld } from "./systems/sr3/world";
-import { GameMaster } from "./systems/sr3/game-master";
+import { runSimulation } from "./core/simulation";
+import { setLogLevel, LogLevel } from "./log";
+import { standardSimulation as sr3StandardSimulation } from "./systems/sr3/simulation";
 
-const system = System.SR3;
-const gm = new GameMaster(createWorld());
-for ( ; ; ) {
-    if (!gm.newRound()) {
-        break;
-    }
+// setLogLevel(LogLevel.Debug);
+
+const sr3Result = runSimulation(
+    10000,
+    sr3StandardSimulation.createWorld,
+    sr3StandardSimulation.createGameMaster
+);
+
+for (const winner of sr3Result.keys()) {
+    const result = sr3Result.get(winner);
+    const label = winner ? winner : "Draw";
+    console.log(`${label}: ${JSON.stringify(result)}`);
 }
-
-info(`${system} scenario finished`, );

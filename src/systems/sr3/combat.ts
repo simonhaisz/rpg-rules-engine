@@ -10,14 +10,16 @@ export function performRangedAttack(attacker: Character, defender: Character, we
     const range = computeRange(attacker.getLocation(), defender.getLocation());
     const targetNumber = getTN(range, weapon.type) + getAttackBonus(weapon);
     const skill = attacker.getSkill(weapon);
-    const successes = rollSuccesses(skill, targetNumber);
-    if (successes === 0) {
+    const attackSuccesses = rollSuccesses(skill, targetNumber);
+    const dodgeSuccesses = defender.dodge(attackSuccesses);
+    const totalSuccesses = Math.max(0, attackSuccesses - dodgeSuccesses);
+    if (totalSuccesses === 0) {
         debug(`'${attacker.name}' misses attack against '${defender.name}'`);
         return;
     } else {
-        debug(`'${attacker.name}' hits with ${successes} successes`);
+        debug(`'${attacker.name}' hits with ${totalSuccesses} successes`);
     }
-    const level = increaseDamageLevel(weapon.damage.level, successes);
+    const level = increaseDamageLevel(weapon.damage.level, totalSuccesses);
     const damage = { ...weapon.damage, level };
     debug(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
     defender.resistDamage({ ...weapon.damage, level });

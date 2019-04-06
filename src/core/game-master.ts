@@ -1,5 +1,11 @@
 import { IWorld } from "./world";
+import { CharacterType } from "./character";
 
+export type GameResult = {
+    winner?: CharacterType;
+    numberOfRounds: number;
+};
 export interface IGameMaster {
-    newRound(): void;
+    newRound(): boolean;
+    getResult(): GameResult;
 }

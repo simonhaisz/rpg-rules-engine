@@ -1,5 +1,5 @@
 import { info, debug } from "../../log";
-import { IGameMaster } from "../../core/game-master";
+import { IGameMaster, GameResult } from "../../core/game-master";
 import { World } from "./world";
 import { initiativeOrder } from "./initiative";
 import { CharacterType } from "../../core/character";
@@ -7,6 +7,8 @@ import { CharacterType } from "../../core/character";
 export class GameMaster implements IGameMaster {
     readonly world: World;
     private round = 0;
+    private complete = false;
+    private winner?: CharacterType;
 
     constructor(world: World) {
         this.world = world;
@@ -31,18 +33,37 @@ export class GameMaster implements IGameMaster {
             debug(`Completed round ${this.round} with no victor`);
             if (this.round > 100) {
                 info(`Completed 10 rounds with no victor - calling it a draw`);
+                this._setWinner();
                 return false;
             }
             return true;
         } else if (hasPC) {
             info(`PCs win combat on round ${this.round}`);
+            this._setWinner(CharacterType.PC);
             return false;
         } else if (hasNPC) {
             info(`NPCs win combat on round ${this.round}`);
+            this._setWinner(CharacterType.NPC);
             return false;
         } else {
             info(`Combat draw on round ${this.round}`);
+            this._setWinner();
             return false;
+        }
+    }
+
+    private _setWinner(winner?: CharacterType) {
+        this.winner = winner;
+        this.complete = true;
+    }
+
+    getResult(): GameResult {
+        if (!this.complete) {
+            throw new Error(`getResult() called before game is completed`);
+        }
+        return {
+            winner: this.winner,
+            numberOfRounds: this.round
         }
     }
 }

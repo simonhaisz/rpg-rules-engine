@@ -44,7 +44,17 @@ export class Character implements ICharacter {
         StunBoxes: 0
     };
 
-    constructor(world: World, type: CharacterType, name: string, attributes: Attributes, initiativeBonus: number, initiativeDice: number, skills: Skills, weapons: Weapon[], armor: Armor) {
+    constructor(
+        world: World,
+        type: CharacterType,
+        name: string,
+        attributes: Attributes,
+        initiativeBonus: number,
+        initiativeDice: number,
+        skills: Skills,
+        weapons: Weapon[],
+        armor: Armor
+    ) {
         this.world = world;
         this.type = type;
         this.name = name;

@@ -1,6 +1,8 @@
-import { RangeBracket } from "./range";
-import { Weapon, WeaponType } from "./weapon";
-import { DamageLevel, ArmorType, DamageType } from "./damage";
+import { RangeBracket } from "../range";
+import { WeaponType } from "../weapon";
+import { SR3_Weapon } from "./weapon";
+import { DamageType } from "../damage";
+import { DamageLevel, ArmorType } from "./damage";
 
 export const LightPistolRange: RangeBracket = {
     Short: 5,
@@ -16,7 +18,7 @@ export const HeavyPistolRange: RangeBracket = {
     Extreme: 60
 };
 
-export const Beretta201T: Weapon = {
+export const Beretta201T: SR3_Weapon = {
     name: "Barreta 201T",
     type: WeaponType.LightPistol,
     damage: {
@@ -27,7 +29,7 @@ export const Beretta201T: Weapon = {
     }
 };
 
-export const AresPredator: Weapon = {
+export const AresPredator: SR3_Weapon = {
     name: "Ares Predator",
     type: WeaponType.HeavyPistol,
     damage: {

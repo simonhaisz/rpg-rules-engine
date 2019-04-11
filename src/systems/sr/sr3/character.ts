@@ -1,12 +1,15 @@
-import { info, debug } from "../../log";
-import { ICharacter, CharacterType } from "../../core/character";
-import { Location } from "../../core/location";
-import { Weapon, WeaponType } from "./weapon";
-import { Armor, Damage, getEffectivePower, decreaseDamageLevel, DamageLevel, getBoxesOfDamage, DamageType } from "./damage";
-import { rollSuccesses, rollTotal } from "./dice";
-import { World } from "./world";
-import { computeRange } from "../../core/world";
+import { info, debug } from "../../../log";
+import { CharacterType } from "../../../core/character";
+import { SR3_Weapon } from "./weapon";
+import { Armor, SR3_Damage, getEffectivePower, decreaseDamageLevel, DamageLevel, getBoxesOfDamage } from "./damage";
+import { rollSuccesses } from "./dice";
+import { SR3_World } from "./world";
+import { computeRange } from "../../../core/world";
 import { performRangedAttack } from "./combat";
+import { SR_Character, Skills } from "../character";
+import { rollTotal } from "../dice";
+import { WeaponType } from "../weapon";
+import { DamageType } from "../damage";
 
 export type Attributes = {
     Body: number;
@@ -17,101 +20,58 @@ export type Attributes = {
     Willpower: number;
 };
 
-export type Skills = Map<string, number>;
-
-export type DamageTrack = {
-    PhysicalBoxes: number;
-    StunBoxes: number;
-}
-
-export class Character implements ICharacter {
-    readonly world: World;
-    readonly type: CharacterType;
-    readonly name: string;
+export class SR3_Character extends SR_Character {
+    readonly world: SR3_World;
     readonly attributes: Attributes;
     readonly reaction: number;
     readonly initiativeBonus: number;
     readonly initiativeDice: number;
     readonly combatPoolDice: number;
-    readonly skills: Skills;
-    readonly weapons: Weapon[];
+    readonly weapons: SR3_Weapon[];
     readonly armor: Armor;
-    private _initiative = -1;
     private _combatPool = -1;
-    private _location: Location = { x: -1, y: -1, z: -1 };
-    private _damage: DamageTrack = {
-        PhysicalBoxes: 0,
-        StunBoxes: 0
-    };
 
     constructor(
-        world: World,
+        world: SR3_World,
         type: CharacterType,
         name: string,
         attributes: Attributes,
         initiativeBonus: number,
         initiativeDice: number,
         skills: Skills,
-        weapons: Weapon[],
+        weapons: SR3_Weapon[],
         armor: Armor
     ) {
+        super(type, name, skills);
         this.world = world;
-        this.type = type;
-        this.name = name;
         this.attributes = attributes;
         this.reaction = Math.floor((attributes.Intelligence + attributes.Quickness) / 2);
         this.initiativeBonus = initiativeBonus;
         this.initiativeDice = initiativeDice;
         this.combatPoolDice = Math.floor((attributes.Quickness + attributes.Intelligence + attributes.Willpower) /2);
-        this.skills = skills;
         this.weapons = weapons;
         this.armor = armor;
         world.addCharacter(this);
-    }
-
-    move(location: Location) {
-        this._location = location;
-    }
-
-    isAlive(): boolean {
-        return this._damage.PhysicalBoxes < 10;
-    }
-
-    isConscious(): boolean {
-        return this._damage.StunBoxes < 10;
-    }
-
-    canAct(): boolean {
-        return this.isAlive() && this.isConscious();
-    }
-
-    getInitiative(): number {
-        return this._initiative;
-    }
-
-    getLocation(): Location {
-        return { ... this._location };
-    }
-
-    logState() {
-        debug(`name: ${this.name} physical:${this._damage.PhysicalBoxes} stun:${this._damage.StunBoxes}`);
     }
 
     newRound() {
         if (!this.canAct()) {
             return;
         }
-        this._initiative = this.reaction + this.initiativeBonus + rollTotal(this.initiativeDice);
+        this.initiative =
+            this.reaction +
+            this.initiativeBonus +
+            rollTotal(this.initiativeDice);
         this._combatPool = this.combatPoolDice;
-        debug(`name: ${this.name} rolled ${this._initiative} for initiative`)
+        debug(`name: ${this.name} rolled ${this.initiative} for initiative`)
     }
 
     newPhase() {
         if (!this.canAct()) {
             return;
         }
-        if (this._initiative > 0) {
-            this._initiative -= 10;
+        if (this.initiative > 0) {
+            this.initiative -= 10;
         }
     }
 
@@ -136,7 +96,7 @@ export class Character implements ICharacter {
         return rollSuccesses(dodgeDice, 4);
     }
 
-    resistDamage(damage: Damage) {
+    resistDamage(damage: SR3_Damage) {
         const targetNumber = getEffectivePower(damage, this.armor);
         const result = rollSuccesses(this.attributes.Body, targetNumber);
         const damageLevel = decreaseDamageLevel(damage.level, result);
@@ -147,33 +107,27 @@ export class Character implements ICharacter {
         const boxesOfDamage = getBoxesOfDamage(damageLevel);
         switch (damage.type) {
             case DamageType.Physical:
-                this._damage.PhysicalBoxes += boxesOfDamage;
+                this.damage.PhysicalBoxes += boxesOfDamage;
                 debug(`'${this.name}' takes ${boxesOfDamage} boxes of Physical damage`);
                 break;
             case DamageType.Stun:
-                this._damage.StunBoxes += boxesOfDamage;
+                this.damage.StunBoxes += boxesOfDamage;
                 debug(`'${this.name}' takes ${boxesOfDamage} boxes of Stun damage`);
                 break;
         }
     }
 
-    getSkill(weapon: Weapon): number {
-        let skill;
+    getWeaponSkill(weapon: SR3_Weapon): number {
         switch (weapon.type) {
             case WeaponType.LightPistol:
             case WeaponType.HeavyPistol:
-                skill = this.skills.get("Pistols");
-                break;
+                return this.getSkill("Pistols", this.attributes.Quickness -1);
             default:
                 throw new Error(`Unknown weapon type '${weapon.type}'`);
         }
-        if (skill) {
-            return skill;
-        }
-        return this.attributes.Quickness - 1;
     }
 
-    findNearestOpponent(): Character | null {
+    findNearestOpponent(): SR3_Character | null {
         const opponentType = this.type === CharacterType.PC ? CharacterType.NPC : CharacterType.PC;
         const opponents = this.world.characters.filter(c => c.canAct() && c.type === opponentType);
         if (opponents.length === 0) {

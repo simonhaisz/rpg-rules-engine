@@ -1,12 +1,6 @@
 import { WeaponType } from "./weapon";
 import { LightPistolRange, HeavyPistolRange } from "./pistols";
-
-export type RangeBracket = {
-    Short: number;
-    Medium: number;
-    Long: number;
-    Extreme: number;
-};
+import { RangeBracket } from "../range";
 
 export function getRangeBracket(weaponType: WeaponType): RangeBracket {
     switch (weaponType) {

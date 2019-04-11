@@ -1,5 +1,5 @@
-import { ICharacter } from "./character";
 import { Location } from "./location";
+import { ICharacter } from "./character";
 
 export const computeRange = (a: Location, b: Location): number => {
     if (a.z !== b.z) {
@@ -12,6 +12,10 @@ export const computeRange = (a: Location, b: Location): number => {
     return h;
 };
 
-export interface IWorld {
-    setup(): void;
+export abstract class World<TCharacter extends ICharacter> {
+    readonly characters: TCharacter[] = [];
+
+    addCharacter(character: TCharacter) {
+        this.characters.push(character);
+    }
 }

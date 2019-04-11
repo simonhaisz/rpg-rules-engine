@@ -1,4 +1,3 @@
-import { IWorld } from "./world";
 import { CharacterType } from "./character";
 
 export type GameResult = {

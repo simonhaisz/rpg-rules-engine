@@ -1,6 +1,6 @@
 import { runSimulation } from "./core/simulation";
 import { setLogLevel, LogLevel } from "./log";
-import { standardSimulation as sr3StandardSimulation } from "./systems/sr3/simulation";
+import { standardSimulation as sr3StandardSimulation } from "./systems/sr/sr3/simulation";
 
 // setLogLevel(LogLevel.Debug);
 

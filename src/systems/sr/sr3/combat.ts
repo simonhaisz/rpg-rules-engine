@@ -1,15 +1,16 @@
-import { info, debug } from "../../log";
-import { Character } from "./character";
-import { computeRange } from "../../core/world";
+import { info, debug } from "../../../log";
+import { SR3_Character } from "./character";
+import { computeRange } from "../../../core/world";
 import { getTN } from "./range";
-import { Weapon, WeaponModification } from "./weapon";
+import { SR3_Weapon } from "./weapon";
 import { rollSuccesses } from "./dice";
 import { increaseDamageLevel } from "./damage";
+import { WeaponModification } from "../weapon";
 
-export function performRangedAttack(attacker: Character, defender: Character, weapon: Weapon) {
+export function performRangedAttack(attacker: SR3_Character, defender: SR3_Character, weapon: SR3_Weapon) {
     const range = computeRange(attacker.getLocation(), defender.getLocation());
     const targetNumber = getTN(range, weapon.type) + getAttackBonus(weapon);
-    const skill = attacker.getSkill(weapon);
+    const skill = attacker.getWeaponSkill(weapon);
     const attackSuccesses = rollSuccesses(skill, targetNumber);
     const dodgeSuccesses = defender.dodge(attackSuccesses);
     const totalSuccesses = Math.max(0, attackSuccesses - dodgeSuccesses);
@@ -25,7 +26,7 @@ export function performRangedAttack(attacker: Character, defender: Character, we
     defender.resistDamage({ ...weapon.damage, level });
 }
 
-function getAttackBonus(weapon: Weapon): number {
+function getAttackBonus(weapon: SR3_Weapon): number {
     if (weapon.modifications) {
         if (weapon.modifications.includes(WeaponModification.Smartlink)) {
             return -2;

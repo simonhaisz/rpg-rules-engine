@@ -1,16 +1,16 @@
-import { info, debug } from "../../log";
-import { IGameMaster, GameResult } from "../../core/game-master";
-import { World } from "./world";
-import { initiativeOrder } from "./initiative";
-import { CharacterType } from "../../core/character";
+import { info, debug } from "../../../log";
+import { IGameMaster, GameResult } from "../../../core/game-master";
+import { SR3_World } from "./world";
+import { initiativeOrder } from "../initiative";
+import { CharacterType } from "../../../core/character";
 
-export class GameMaster implements IGameMaster {
-    readonly world: World;
+export class SR3_GameMaster implements IGameMaster {
+    readonly world: SR3_World;
     private round = 0;
     private complete = false;
     private winner?: CharacterType;
 
-    constructor(world: World) {
+    constructor(world: SR3_World) {
         this.world = world;
     }
 

@@ -1,3 +1,5 @@
+import { DamageType } from "../damage";
+
 export enum DamageLevel {
     None,
     Light,
@@ -36,12 +38,7 @@ export enum ArmorType {
     Impact
 }
 
-export enum DamageType {
-    Physical,
-    Stun
-}
-
-export type Damage = {
+export type SR3_Damage = {
     power: number;
     level: DamageLevel;
     type: DamageType;
@@ -53,7 +50,7 @@ export type Armor = {
     impact: number;
 };
 
-export function getEffectivePower(damage: Damage, armor: Armor): number {
+export function getEffectivePower(damage: SR3_Damage, armor: Armor): number {
     let powerReduction: number;
     switch (damage.armor) {
         case ArmorType.Ballistic:

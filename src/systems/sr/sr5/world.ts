@@ -1,9 +1,9 @@
 import { World } from "../../../core/world";
 import { SR5_Character, Attributes } from "./character";
-import { SR5_Weapon, AresPredator, BrowningHighPower, HK227 } from "./weapon";
+import { SR5_Weapon, AresPredator, BrowningHighPower, HK227, ColtM23 } from "./weapon";
 import { CharacterType } from "../../../core/character";
 import { WeaponModification } from "../weapon";
-import { Jacket, Vest, Clothing } from "./armor";
+import { Jacket, Vest, Clothing, Security } from "./armor";
 
 export class SR5_World extends World<SR5_Character> {
 }
@@ -74,7 +74,7 @@ function createRunner(world: SR5_World, weapon: SR5_Weapon, armor: number): SR5_
     );
 }
 
-export function createStreetWorld(): SR5_World {
+export function createSR5_StreetWorld(): SR5_World {
     const world = new SR5_World();
 
     const runner = createRunner(world, AresPredator, Vest);
@@ -92,7 +92,7 @@ export function createStreetWorld(): SR5_World {
     return world;
 }
 
-export function createOrganizedCrimeWorld(): SR5_World {
+export function createSR5_OrganizedCrimeWorld(): SR5_World {
     const world = new SR5_World();
 
     const runner = createRunner(world, HK227, Jacket);
@@ -105,6 +105,24 @@ export function createOrganizedCrimeWorld(): SR5_World {
     goon2.move({ x: 20, y: 0, z: 0 });
 
     const goon3 = createGoon(world, 3, AresPredator, Vest);
+    goon3.move({ x: 50, y: 0, z: 0 });
+    
+    return world;
+}
+
+export function createSR5_CorporateWorld(): SR5_World {
+    const world = new SR5_World();
+
+    const runner = createRunner(world, ColtM23, Security);
+    runner.move({ x: 0, y: 0, z: 0 });
+
+    const goon1 = createGoon(world, 1, HK227, Jacket);
+    goon1.move({ x: 5, y: 0, z: 0 });
+
+    const goon2 = createGoon(world, 2, HK227, Jacket);
+    goon2.move({ x: 20, y: 0, z: 0 });
+
+    const goon3 = createGoon(world, 3, HK227, Jacket);
     goon3.move({ x: 50, y: 0, z: 0 });
     
     return world;

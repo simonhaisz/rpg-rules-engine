@@ -67,3 +67,7 @@ export class SR5_1_GameMaster implements IGameMaster {
         }
     }
 }
+
+export function createSR5_1_GameMaster(world: SR5_1_World) {
+    return new SR5_1_GameMaster(world);
+}

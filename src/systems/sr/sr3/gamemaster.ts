@@ -67,3 +67,7 @@ export class SR3_GameMaster implements IGameMaster {
         }
     }
 }
+
+export function createSR3_GameMaster(world: SR3_World): SR3_GameMaster {
+    return new SR3_GameMaster(world);
+}

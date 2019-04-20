@@ -129,6 +129,8 @@ export class SR3_Character extends SR_Character {
                 return this.getSkill("Pistols", this.attributes.Quickness -1);
             case WeaponType.SMG:
                 return this.getSkill("SMGs", this.attributes.Quickness -1);
+            case WeaponType.AssaultRifle:
+                return this.getSkill("Assault Rifles", this.attributes.Quickness -1);
             default:
                 throw new Error(`Unknown weapon type '${weapon.type}'`);
         }

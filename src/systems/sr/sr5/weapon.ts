@@ -42,3 +42,14 @@ export const HK227: SR5_Weapon = {
         type: DamageType.Physical
     }
 }
+
+export const ColtM23: SR5_Weapon = {
+    name: "Colt M23",
+    type: WeaponType.AssaultRifle,
+    firingMode: FiringMode.BF,
+    damage: {
+        DV: 9,
+        AP: -2,
+        type: DamageType.Physical
+    }
+}

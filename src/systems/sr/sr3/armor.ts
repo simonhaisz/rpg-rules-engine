@@ -14,3 +14,8 @@ export const Jacket: Armor = {
     ballistic: 5,
     impact: 3
 };
+
+export const Security: Armor = {
+    ballistic: 6,
+    impact: 4
+}

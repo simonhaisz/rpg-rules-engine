@@ -58,3 +58,15 @@ export const HK227: SR3_Weapon = {
         armor: ArmorType.Ballistic
     }
 }
+
+export const ColtM23: SR3_Weapon = {
+    name: "Colt M23",
+    type: WeaponType.AssaultRifle,
+    firingMode: FiringMode.BF,
+    damage: {
+        power: 8,
+        level: DamageLevel.Moderate,
+        type: DamageType.Physical,
+        armor: ArmorType.Ballistic
+    }
+}

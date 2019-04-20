@@ -1,8 +1,11 @@
 import { runSimulation, SimuationResults } from "./core/simulation";
 import { setLogLevel, LogLevel } from "./log";
-import { streetSimulation as sr3Street, organizedCrimeSimulation as sr3OrganizedCrime } from "./systems/sr/sr3/simulation";
-import { streetSimulation as sr5Street, organizedCrimeSimulation as sr5OrganizedCrime } from "./systems/sr/sr5/simulation";
-import { streetSimulation as sr51Street, organizedCrimeSimulation as sr51OrganizedCrime } from "./systems/sr/sr5/simulation";
+import { createSR3_StreetWorld, createSR3_OrganizedCrimeWorld, createSR3_CorporateWorld } from "./systems/sr/sr3/world";
+import { createSR5_StreetWorld, createSR5_OrganizedCrimeWorld, createSR5_CorporateWorld } from "./systems/sr/sr5/world";
+import { createSR5_1_StreetWorld, createSR5_1_OrganizedCrimeWorld, createSR5_1_CorporateWorld } from "./systems/sr/sr5.1/world";
+import { createSR3_GameMaster } from "./systems/sr/sr3/gamemaster";
+import { createSR5_GameMaster } from "./systems/sr/sr5/gamemaster";
+import { createSR5_1_GameMaster } from "./systems/sr/sr5.1/gamemaster";
 
 setLogLevel(LogLevel.Error);
 
@@ -11,38 +14,56 @@ const iterations = 10000;
 const systemResults = new Map<string,SimuationResults>();
 systemResults.set("SR3", runSimulation(
     iterations,
-    sr3Street.createWorld,
-    sr3Street.createGameMaster
+    createSR3_StreetWorld,
+    createSR3_GameMaster
 ));
 systemResults.set("SR5", runSimulation(
     iterations,
-    sr5Street.createWorld,
-    sr5Street.createGameMaster
+    createSR5_StreetWorld,
+    createSR5_GameMaster
 ));
 systemResults.set("SR5.1", runSimulation(
     iterations,
-    sr51Street.createWorld,
-    sr51Street.createGameMaster
+    createSR5_1_StreetWorld,
+    createSR5_1_GameMaster
 ));
 logResults("Street", systemResults);
 systemResults.clear();
 
 systemResults.set("SR3", runSimulation(
     iterations,
-    sr3OrganizedCrime.createWorld,
-    sr3OrganizedCrime.createGameMaster
+    createSR3_OrganizedCrimeWorld,
+    createSR3_GameMaster
 ));
 systemResults.set("SR5", runSimulation(
     iterations,
-    sr5OrganizedCrime.createWorld,
-    sr5OrganizedCrime.createGameMaster
+    createSR5_OrganizedCrimeWorld,
+    createSR5_GameMaster
 ));
 systemResults.set("SR5.1", runSimulation(
     iterations,
-    sr51OrganizedCrime.createWorld,
-    sr51OrganizedCrime.createGameMaster
+    createSR5_1_OrganizedCrimeWorld,
+    createSR5_1_GameMaster
 ));
 logResults("Organized Crime", systemResults);
+systemResults.clear();
+
+systemResults.set("SR3", runSimulation(
+    iterations,
+    createSR3_CorporateWorld,
+    createSR3_GameMaster
+));
+systemResults.set("SR5", runSimulation(
+    iterations,
+    createSR5_CorporateWorld,
+    createSR5_GameMaster
+));
+systemResults.set("SR5.1", runSimulation(
+    iterations,
+    createSR5_1_CorporateWorld,
+    createSR5_1_GameMaster
+));
+logResults("Corporate", systemResults);
 systemResults.clear();
 
 function logResults(simulation: string, systemResults: Map<string,SimuationResults>) {

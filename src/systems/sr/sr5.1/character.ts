@@ -36,6 +36,7 @@ export class SR5_1_Character extends SR_Character {
         this.initiativeDice = initiativeDice;
         this.weapons = weapons;
         this.armor = armor;
+        world.addCharacter(this);
     }
 
     newRound() {

@@ -24,11 +24,13 @@ export function getBoxesOfDamage(level: DamageLevel): number {
     }
 }
 
-export function resolveDamage(damage: SR3_Damage, firing: FiringMode): SR3_Damage {
+export function resolveDamage(damage: SR3_Damage, firing: FiringMode, successes: number): SR3_Damage {
+    let levelIncrease = Math.floor(successes / 2);
     switch (firing) {
         case FiringMode.SA:
-            return { ...damage };
+            break;
         case FiringMode.BF:
+            levelIncrease + 2;
             // assume 6 round bursts
             switch (damage.level) {
                 case DamageLevel.Light:
@@ -44,6 +46,13 @@ export function resolveDamage(damage: SR3_Damage, firing: FiringMode): SR3_Damag
             }
         default:
             throw new Error(`Unknown firing mode '${firing}'`);
+    }
+    const finalLevel = damage.level + levelIncrease;
+    if (finalLevel <= 4) {
+        return { ...damage, level: finalLevel };
+    } else {
+        const finalPower = damage.power + (finalLevel - 4) * 2;
+        return { ...damage, level: DamageLevel.Deadly, power: finalPower };
     }
 }
 

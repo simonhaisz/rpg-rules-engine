@@ -20,9 +20,7 @@ export function performRangedAttack(attacker: SR3_Character, defender: SR3_Chara
     } else {
         debug(`'${attacker.name}' hits with ${totalSuccesses} successes`);
     }
-    let damage = resolveDamage(weapon.damage, weapon.firingMode);
-    const level = increaseDamageLevel(damage.level, totalSuccesses);
-    damage = { ...damage, level };
+    let damage = resolveDamage(weapon.damage, weapon.firingMode, totalSuccesses);
     debug(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
     defender.resistDamage(damage);
 }

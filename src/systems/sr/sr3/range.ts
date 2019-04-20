@@ -37,6 +37,8 @@ function getRangeBracket(weaponType: WeaponType): RangeBracket {
             return HeavyPistolRange;
         case WeaponType.SMG:
             return SMGRange;
+        case WeaponType.AssaultRifle:
+            return AssaultRifleRange;
         default:
             throw new Error(`Unknown weapon type '${weaponType}'`);
     }

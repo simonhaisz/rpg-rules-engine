@@ -1,4 +1,4 @@
-import { info, debug } from "../../../log";
+import { info, debug, error } from "../../../log";
 import { CharacterType } from "../../../core/character";
 import { SR3_Weapon } from "./weapon";
 import { Armor, SR3_Damage, getEffectivePower, decreaseDamageLevel, DamageLevel, getBoxesOfDamage } from "./damage";
@@ -21,7 +21,7 @@ export type Attributes = {
 };
 
 export class SR3_Character extends SR_Character {
-    readonly world: SR3_World;
+    readonly sr3World: SR3_World;
     readonly attributes: Attributes;
     readonly reaction: number;
     readonly initiativeBonus: number;
@@ -42,8 +42,8 @@ export class SR3_Character extends SR_Character {
         weapons: SR3_Weapon[],
         armor: Armor
     ) {
-        super(type, name, skills);
-        this.world = world;
+        super(world, type, name, skills);
+        this.sr3World = world;
         this.attributes = attributes;
         this.reaction = Math.floor((attributes.Intelligence + attributes.Quickness) / 2);
         this.initiativeBonus = initiativeBonus;
@@ -76,7 +76,12 @@ export class SR3_Character extends SR_Character {
     }
 
     performAction() {
+        if (!this.canAct()) {
+            debug(`${this.name} cannot perform and action because they can no longer act`);
+            return;
+        }
         if (this.weapons.length === 0) {
+            error(`${this.name} has no weapons`)
             return;
         }
         const nearestOpponent = this.findNearestOpponent();
@@ -84,7 +89,7 @@ export class SR3_Character extends SR_Character {
             debug(`No opponents left, doing nothing`);
             return;
         }
-        performRangedAttack(this, nearestOpponent, this.weapons[0]);
+        performRangedAttack(this, <SR3_Character>nearestOpponent, this.weapons[0]);
     }
 
     dodge(attackSuccesses: number): number {
@@ -122,20 +127,10 @@ export class SR3_Character extends SR_Character {
             case WeaponType.LightPistol:
             case WeaponType.HeavyPistol:
                 return this.getSkill("Pistols", this.attributes.Quickness -1);
+            case WeaponType.SMG:
+                return this.getSkill("SMGs", this.attributes.Quickness -1);
             default:
                 throw new Error(`Unknown weapon type '${weapon.type}'`);
         }
-    }
-
-    findNearestOpponent(): SR3_Character | null {
-        const opponentType = this.type === CharacterType.PC ? CharacterType.NPC : CharacterType.PC;
-        const opponents = this.world.characters.filter(c => c.canAct() && c.type === opponentType);
-        if (opponents.length === 0) {
-            return null;
-        } 
-        opponents.sort((a, b) =>
-            computeRange(this.getLocation(), a.getLocation()) - computeRange(this.getLocation(), b.getLocation())
-        );
-        return opponents[0];
     }
 }

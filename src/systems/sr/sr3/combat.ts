@@ -4,7 +4,7 @@ import { computeRange } from "../../../core/world";
 import { getTN } from "./range";
 import { SR3_Weapon } from "./weapon";
 import { rollSuccesses } from "./dice";
-import { increaseDamageLevel } from "./damage";
+import { increaseDamageLevel, resolveDamage } from "./damage";
 import { WeaponModification } from "../weapon";
 
 export function performRangedAttack(attacker: SR3_Character, defender: SR3_Character, weapon: SR3_Weapon) {
@@ -20,10 +20,11 @@ export function performRangedAttack(attacker: SR3_Character, defender: SR3_Chara
     } else {
         debug(`'${attacker.name}' hits with ${totalSuccesses} successes`);
     }
-    const level = increaseDamageLevel(weapon.damage.level, totalSuccesses);
-    const damage = { ...weapon.damage, level };
+    let damage = resolveDamage(weapon.damage, weapon.firingMode);
+    const level = increaseDamageLevel(damage.level, totalSuccesses);
+    damage = { ...damage, level };
     debug(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
-    defender.resistDamage({ ...weapon.damage, level });
+    defender.resistDamage(damage);
 }
 
 function getAttackBonus(weapon: SR3_Weapon): number {

@@ -2,6 +2,7 @@ import { ICharacter, CharacterType } from "../../core/character";
 import { Location } from "../../core/location";
 import { debug } from "../../log";
 import { WeaponType } from "./weapon";
+import { World, computeRange } from "../../core/world";
 
 export type Skills = Map<string, number>;
 
@@ -11,6 +12,7 @@ export type DamageTrack = {
 }
 
 export abstract class SR_Character implements ICharacter {
+    readonly srWorld: World<SR_Character>;
     readonly type: CharacterType;
     readonly name: string;
     readonly skills: Skills;
@@ -22,10 +24,12 @@ export abstract class SR_Character implements ICharacter {
     protected initiative = -1;
 
     constructor(
+        world: World<SR_Character>,
         type: CharacterType,
         name: string,
         skills: Skills
     ) {
+        this.srWorld = world;
         this.type = type;
         this.name = name;
         this.skills = skills;
@@ -65,6 +69,18 @@ export abstract class SR_Character implements ICharacter {
             return value;
         }
         return defaultValue
+    }
+
+    findNearestOpponent(): SR_Character | null {
+        const opponentType = this.type === CharacterType.PC ? CharacterType.NPC : CharacterType.PC;
+        const opponents = this.srWorld.characters.filter(c => c.canAct() && c.type === opponentType);
+        if (opponents.length === 0) {
+            return null;
+        } 
+        opponents.sort((a, b) =>
+            computeRange(this.getLocation(), a.getLocation()) - computeRange(this.getLocation(), b.getLocation())
+        );
+        return opponents[0];
     }
 
     abstract newRound(): void;

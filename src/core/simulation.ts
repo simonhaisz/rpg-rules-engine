@@ -1,21 +1,22 @@
-import { IWorld } from "./world";
-import { IGameMaster, GameResult } from "./game-master";
-import { CharacterType } from "./character";
+import { IGameMaster, GameResult } from "./gamemaster";
+import { CharacterType, ICharacter } from "./character";
 import { debug } from "../log";
+import { World } from "./world";
 
-type WinStats = {
+export type WinStats = {
     count: number;
     probability: number;
     minRounds: number;
     maxRounds: number;
     averageRounds: number;
     medianRounds: number;
-}
-export function runSimulation<TWorld extends IWorld, TGameMaster extends IGameMaster>(
+};
+export type SimuationResults = Map<CharacterType | undefined, WinStats>;
+export function runSimulation<TCharacter extends ICharacter, TWorld extends World<TCharacter>, TGameMaster extends IGameMaster>(
     iterations: number,
     worldCreator: () => TWorld,
     gmCreator: (world: TWorld) => TGameMaster
-    ): Map<CharacterType | undefined, WinStats> {
+    ): SimuationResults {
     const allResults: GameResult[] = []
     for (let i=0; i<iterations; i++) {
         const world = worldCreator();

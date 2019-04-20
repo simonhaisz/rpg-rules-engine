@@ -33,7 +33,7 @@ export function error(output: string) {
 }
 
 function log(output: string, level: LogLevel) {
-    if (level <= LEVEL) {
+    if (level < LEVEL) {
         return;
     }
     console.log(`${getLogLevelLabel(level)}:${output}`);

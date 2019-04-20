@@ -1,27 +1,35 @@
 import { World } from "../../../core/world";
-import { SR3_Character } from "./character";
+import { SR5_1_Character } from "./character";
+import { SR5_1_Weapon, AresPredator, BrowningHighPower, HKMP9 } from "./weapon";
+import { Attributes } from "../sr5/character";
 import { CharacterType } from "../../../core/character";
 import { WeaponModification } from "../weapon";
-import { SR3_Weapon, AresPredator, BrowningHighPower, HK227 } from "./weapon";
-import { Armor } from "./damage";
 import { Jacket, Vest, Clothing } from "./armor";
 
-export class SR3_World extends World<SR3_Character> {
+export class SR5_1_World extends World<SR5_1_Character> {
 }
 
-function createGoon(world: SR3_World, n: number, weapon: SR3_Weapon, armor: Armor): SR3_Character {
+function createGoon(world: SR5_1_World, n: number, weapon: SR5_1_Weapon, armor: number): SR5_1_Character {
     const name = `Goon ${n}`;
-    const attributes = { Body: 4, Quickness: 4, Strength: 4, Charisma: 3, Intelligence: 3, Willpower: 3 };
+    const attributes: Attributes = {
+        Body: 4,
+        Agility: 4,
+        Reaction: 4,
+        Strength: 4,
+        Charisma: 3,
+        Logic: 3,
+        Intuition: 3,
+        Willpower: 3
+    };
     const initiativeBonus = 0;
     const initiativeDice = 1;
     const skills = new Map<string,number>();
     skills.set("Pistols", 3);
-    skills.set("SMGs", 3);
-    skills.set("Assault Rifles", 3);
-    const weapons: SR3_Weapon[] = [
+    skills.set("Automatics", 3);
+    const weapons: SR5_1_Weapon[] = [
         weapon
     ];
-    return new SR3_Character(
+    return new SR5_1_Character(
         world,
         CharacterType.NPC,
         name,
@@ -34,26 +42,27 @@ function createGoon(world: SR3_World, n: number, weapon: SR3_Weapon, armor: Armo
     );
 }
 
-function createRunner(world: SR3_World, weapon: SR3_Weapon, armor: Armor): SR3_Character {
-    const name = "Runner";
-    const attributes = {
+function createRunner(world: SR5_1_World, weapon: SR5_1_Weapon, armor: number): SR5_1_Character {
+    const name = `Runner`;
+    const attributes: Attributes = {
         Body: 5,
-        Quickness: 6,
+        Agility: 6,
+        Reaction: 6,
         Strength: 6,
         Charisma: 4,
-        Intelligence: 4,
+        Logic: 4,
+        Intuition: 4,
         Willpower: 4
     };
     const initiativeBonus = 4;
     const initiativeDice = 3;
     const skills = new Map<string,number>();
     skills.set("Pistols", 5);
-    skills.set("SMGs", 5);
-    skills.set("Assault Rifles", 5);
-    const weapons: SR3_Weapon[] = [
+    skills.set("Automatics", 5);
+    const weapons: SR5_1_Weapon[] = [
         { ...weapon, modifications: [WeaponModification.Smartlink] }
     ];
-    return new SR3_Character(
+    return new SR5_1_Character(
         world,
         CharacterType.PC,
         name,
@@ -62,12 +71,12 @@ function createRunner(world: SR3_World, weapon: SR3_Weapon, armor: Armor): SR3_C
         initiativeDice,
         skills,
         weapons,
-        armor
+        armor,
     );
 }
 
-export function createStreetWorld(): SR3_World {
-    const world = new SR3_World();
+export function createStreetWorld(): SR5_1_World {
+    const world = new SR5_1_World();
 
     const runner = createRunner(world, AresPredator, Vest);
     runner.move({ x: 0, y: 0, z: 0 });
@@ -84,10 +93,10 @@ export function createStreetWorld(): SR3_World {
     return world;
 }
 
-export function createOrganizedCrimeWorld(): SR3_World {
-    const world = new SR3_World();
+export function createOrganizedCrimeWorld(): SR5_1_World {
+    const world = new SR5_1_World();
 
-    const runner = createRunner(world, HK227, Jacket);
+    const runner = createRunner(world, HKMP9, Jacket);
     runner.move({ x: 0, y: 0, z: 0 });
 
     const goon1 = createGoon(world, 1, AresPredator, Vest);

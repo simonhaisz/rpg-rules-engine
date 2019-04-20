@@ -4,6 +4,7 @@ import { computeRange } from "../../../core/world";
 import { WeaponModification } from "../weapon";
 import { debug } from "../../../log";
 import { SR5_rollHits as rollHits } from "./dice";
+import { getRangeModifier } from "./range";
 
 export function performRangedAttack(
     attacker: SR5_Character,
@@ -11,20 +12,25 @@ export function performRangedAttack(
     weapon: SR5_Weapon
     ) {
     const range = computeRange(attacker.getLocation(), defender.getLocation());
-    const skill = attacker.getSkill(weapon);
-    const dicePool = skill + getWeaponModifier(weapon);
-    const attackSuccesses = rollHits(skill);
-    const dodgeSuccesses = defender.dodge(attackSuccesses);
-    const totalSuccesses = Math.max(0, attackSuccesses - dodgeSuccesses);
-    if (totalSuccesses === 0) {
+    const skill = attacker.getWeaponSkill(weapon);
+    const dicePool = Math.max(skill + getWeaponModifier(weapon) + getRangeModifier(range, weapon.type), 0);
+    if (dicePool === 0) {
+        debug(`'${attacker.name}' dice pool reduced to 0, cannot attack`);
+        return;
+    }
+    const attackHits = rollHits(dicePool);
+    const dodgeHits = defender.dodge();
+    const netHits = Math.max(0, attackHits - dodgeHits);
+    if (netHits === 0) {
         debug(`'${attacker.name}' misses attack against '${defender.name}'`);
         return;
     } else {
-        debug(`'${attacker.name}' hits with ${totalSuccesses} successes`);
+        debug(`'${attacker.name}' hits with ${netHits} net hits`);
     }
-    const damage = { ...weapon.damage, level };
+    const DV = weapon.damage.DV + netHits;
+    const damage = {...weapon.damage, DV};
     debug(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
-    defender.resistDamage({ ...weapon.damage, level });
+    defender.resistDamage(damage);
 }
 
 function getWeaponModifier(weapon: SR5_Weapon): number {

@@ -1,5 +1,5 @@
 import { info, debug } from "../../../log";
-import { IGameMaster, GameResult } from "../../../core/game-master";
+import { IGameMaster, GameResult, MAX_NUMBER_OF_ROUNDS } from "../../../core/gamemaster";
 import { SR3_World } from "./world";
 import { initiativeOrder } from "../initiative";
 import { CharacterType } from "../../../core/character";
@@ -31,8 +31,8 @@ export class SR3_GameMaster implements IGameMaster {
         const hasNPC = actingCharacters.filter(c => c.canAct() && c.type === CharacterType.NPC).length > 0;
         if (hasPC && hasNPC) {
             debug(`Completed round ${this.round} with no victor`);
-            if (this.round > 100) {
-                info(`Completed 10 rounds with no victor - calling it a draw`);
+            if (this.round === MAX_NUMBER_OF_ROUNDS) {
+                info(`Completed ${MAX_NUMBER_OF_ROUNDS} rounds with no victor - calling it a draw`);
                 this._setWinner();
                 return false;
             }

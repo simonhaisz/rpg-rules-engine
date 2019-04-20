@@ -37,27 +37,29 @@ function getRangeBracket(weaponType: WeaponType): RangeBracket {
             return HeavyPistolRange;
         case WeaponType.SMG:
             return SMGRange;
+        case WeaponType.AssaultRifle:
+            return AssaultRifleRange;
         default:
             throw new Error(`Unknown weapon type '${weaponType}'`);
     }
 }
 
-export function getTN(range: number, weaponType: WeaponType): number {
+export function getRangeModifier(range: number, weaponType: WeaponType): number {
     if (range < 0) {
         throw new Error(`Range cannot be negative: ${range}`);
     }
     const bracket = getRangeBracket(weaponType);
     if (range <= bracket.Short) {
-        return 4;
+        return 0;
     }
     if (range <= bracket.Medium) {
-        return 5;
+        return -1;
     }
     if (range <= bracket.Long) {
-        return 6;
+        return -3;
     }
     if (range <= bracket.Extreme) {
-        return 9;
+        return -6;
     }
     throw new Error(`Range ${range} is outside the maximum range ${bracket.Extreme}`);
 }

@@ -8,3 +8,5 @@ export interface IGameMaster {
     newRound(): boolean;
     getResult(): GameResult;
 }
+
+export const MAX_NUMBER_OF_ROUNDS = 20;

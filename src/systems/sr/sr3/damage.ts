@@ -1,4 +1,5 @@
 import { DamageType } from "../damage";
+import { FiringMode } from "../weapon";
 
 export enum DamageLevel {
     None,
@@ -20,6 +21,29 @@ export function getBoxesOfDamage(level: DamageLevel): number {
             return 6;
         case DamageLevel.Deadly:
             return 10;
+    }
+}
+
+export function resolveDamage(damage: SR3_Damage, firing: FiringMode): SR3_Damage {
+    switch (firing) {
+        case FiringMode.SA:
+            return { ...damage };
+        case FiringMode.BF:
+            // assume 6 round bursts
+            switch (damage.level) {
+                case DamageLevel.Light:
+                    return { ...damage, level: DamageLevel.Serious};
+                case DamageLevel.Moderate:
+                    return { ...damage, level: DamageLevel.Deadly};
+                case DamageLevel.Serious:
+                    return { ...damage, level: DamageLevel.Deadly, power: damage.power + 2};
+                case DamageLevel.Deadly:
+                    return { ...damage, level: DamageLevel.Deadly, power: damage.power + 4};
+                default:
+                    throw new Error(`Unknown damage level '${damage.level}'`);
+            }
+        default:
+            throw new Error(`Unknown firing mode '${firing}'`);
     }
 }
 

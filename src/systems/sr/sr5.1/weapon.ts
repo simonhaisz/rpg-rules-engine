@@ -45,8 +45,8 @@ export const AresPredator: SR5_1_Weapon = {
     currentAmmo: 10
 };
 
-export const HKMP9: SR5_1_Weapon = {
-    name: "HK MP-9",
+export const HK_227: SR5_1_Weapon = {
+    name: "HK 227",
     type: SR5_1_WeaponType.SMG,
     firingMode: FiringMode.BF,
     damage: {

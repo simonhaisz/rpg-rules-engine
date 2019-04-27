@@ -42,8 +42,14 @@ export function performRangedAttack(
         debug(`'${attacker.name}' misses attack against '${defender.name}' - got ${hits} hits when needed ${threshold}`);
         return;
     }
-    debug(`'${attacker.name}' hits '${defender.name}' with ${hits} hits for ${JSON.stringify(weapon.damage)} damage`);
-    defender.resistDamage(weapon.damage);
+    let DV = weapon.damage.DV;
+    if (weapon.firingMode === FiringMode.BF && netHits > 0) {
+        // assume 5 round bursts
+        DV += Math.min(netHits, 2);
+    }
+    const damage = { ...weapon.damage, DV };
+    debug(`'${attacker.name}' hits '${defender.name}' with ${hits} hits for ${JSON.stringify(damage)} damage`);
+    defender.resistDamage(damage);
 }
 
 function getWeaponModifier(weapon: SR5_1_Weapon): number {
@@ -55,13 +61,15 @@ function getWeaponModifier(weapon: SR5_1_Weapon): number {
             modification += 2;
         }
     }
-    switch (weapon.type) {
-        case SR5_1_WeaponType.HandGun:
-        case SR5_1_WeaponType.HandCannon:
-            modification += 1;
+    switch (weapon.firingMode) {
+        case FiringMode.SA:
+            // the googles do nothing
+            break;
+        case FiringMode.BF:
+            modification + 2;
             break;
         default:
-            break;
+            throw new Error(`Unknown FiringMode ${weapon.firingMode}`);
     }
     return modification;
 }

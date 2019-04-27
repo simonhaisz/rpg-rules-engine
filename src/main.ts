@@ -12,6 +12,7 @@ setLogLevel(LogLevel.Error);
 const iterations = 10000;
 
 const systemResults = new Map<string,SimuationResults>();
+
 systemResults.set("SR3", runSimulation(
     iterations,
     createSR3_StreetWorld,

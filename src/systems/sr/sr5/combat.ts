@@ -40,7 +40,8 @@ export function performRangedAttack(
     } else {
         debug(`'${attacker.name}' hits with ${netHits} net hits - got ${attackHits} against defense of ${dodgeHits}`);
     }
-    const DV = weapon.damage.DV + netHits;
+    // assum 5 round bursts
+    const DV = weapon.damage.DV + netHits + (weapon.firingMode === FiringMode.BF ? 4 : 0);
     const damage = {...weapon.damage, DV};
     debug(`'${attacker.name}' hits '${defender.name}' with ${JSON.stringify(damage)}`);
     defender.resistDamage(damage);

@@ -7,6 +7,8 @@ export type SR3_Weapon = {
     type: WeaponType;
     damage: SR3_Damage;
     firingMode: FiringMode;
+    maxAmmo: number;
+    currentAmmo: number;
     modifications?: WeaponModification[]
 };
 
@@ -20,20 +22,10 @@ export const BrowningHighPower: SR3_Weapon = {
         level: DamageLevel.Light,
         type: DamageType.Physical,
         armor: ArmorType.Ballistic
-    }
+    },
+    maxAmmo: 20,
+    currentAmmo: 20
 };
-
-export const CeskaBlackScorpion: SR3_Weapon = {
-    name: "Ceska Black Scorpion",
-    type: WeaponType.LightPistol,
-    firingMode: FiringMode.BF,
-    damage: {
-        power: 6,
-        level: DamageLevel.Light,
-        type: DamageType.Physical,
-        armor: ArmorType.Ballistic
-    }
-}
 
 export const AresPredator: SR3_Weapon = {
     name: "Ares Predator",
@@ -44,7 +36,9 @@ export const AresPredator: SR3_Weapon = {
         level: DamageLevel.Moderate,
         type: DamageType.Physical,
         armor: ArmorType.Ballistic
-    }
+    },
+    maxAmmo: 15,
+    currentAmmo: 15
 };
 
 export const HK227: SR3_Weapon = {
@@ -56,7 +50,9 @@ export const HK227: SR3_Weapon = {
         level: DamageLevel.Moderate,
         type: DamageType.Physical,
         armor: ArmorType.Ballistic
-    }
+    },
+    maxAmmo: 30,
+    currentAmmo: 30
 }
 
 export const ColtM23: SR3_Weapon = {
@@ -68,5 +64,7 @@ export const ColtM23: SR3_Weapon = {
         level: DamageLevel.Moderate,
         type: DamageType.Physical,
         armor: ArmorType.Ballistic
-    }
+    },
+    maxAmmo: 40,
+    currentAmmo: 40
 }

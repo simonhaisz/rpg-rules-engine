@@ -14,6 +14,8 @@ export type SR5_1_Weapon = {
     type: SR5_1_WeaponType;
     firingMode: FiringMode;
     damage: SR5_1_Damage;
+    maxAmmo: number;
+    currentAmmo: number;
     modifications?: WeaponModification[];
 };
 
@@ -25,7 +27,9 @@ export const BrowningHighPower: SR5_1_Weapon = {
         DV: 5,
         AP: -1,
         Type: DamageType.Physical
-    }
+    },
+    maxAmmo: 20,
+    currentAmmo: 20
 };
 
 export const AresPredator: SR5_1_Weapon = {
@@ -36,7 +40,9 @@ export const AresPredator: SR5_1_Weapon = {
         DV: 6,
         AP: -2,
         Type: DamageType.Physical
-    }
+    },
+    maxAmmo: 10,
+    currentAmmo: 10
 };
 
 export const HKMP9: SR5_1_Weapon = {
@@ -47,8 +53,10 @@ export const HKMP9: SR5_1_Weapon = {
         DV: 5,
         AP: -1,
         Type: DamageType.Physical
-    }
-}
+    },
+    maxAmmo: 40,
+    currentAmmo: 40
+};
 
 export const ColtM23: SR5_1_Weapon = {
     name: "Colt M23",
@@ -58,5 +66,7 @@ export const ColtM23: SR5_1_Weapon = {
         DV: 5,
         AP: -5,
         Type: DamageType.Physical
-    }
-}
+    },
+    maxAmmo: 40,
+    currentAmmo: 40
+};

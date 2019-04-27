@@ -4,10 +4,23 @@ import { computeRange } from "../../../core/world";
 import { getTN } from "./range";
 import { SR3_Weapon } from "./weapon";
 import { rollSuccesses } from "./dice";
-import { increaseDamageLevel, resolveDamage } from "./damage";
-import { WeaponModification } from "../weapon";
+import { resolveDamage } from "./damage";
+import { WeaponModification, FiringMode } from "../weapon";
 
 export function performRangedAttack(attacker: SR3_Character, defender: SR3_Character, weapon: SR3_Weapon) {
+    if (weapon.currentAmmo === 0) {
+        attacker.reload(weapon);
+        return;
+    } else {
+        switch (weapon.firingMode) {
+            case FiringMode.SA:
+                weapon.currentAmmo -= 1;
+                break;
+            case FiringMode.BF:
+                weapon.currentAmmo -= 5;
+                break;
+        }
+    }
     const range = computeRange(attacker.getLocation(), defender.getLocation());
     const targetNumber = getTN(range, weapon.type) + getAttackBonus(weapon);
     const skill = attacker.getWeaponSkill(weapon);

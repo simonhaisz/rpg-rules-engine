@@ -1,7 +1,7 @@
 import { SR5_Character } from "./character";
 import { SR5_Weapon } from "./weapon";
 import { computeRange } from "../../../core/world";
-import { WeaponModification } from "../weapon";
+import { WeaponModification, FiringMode } from "../weapon";
 import { debug } from "../../../log";
 import { SR5_rollHits as rollHits } from "./dice";
 import { getRangeModifier } from "./range";
@@ -11,6 +11,19 @@ export function performRangedAttack(
     defender: SR5_Character,
     weapon: SR5_Weapon
     ) {
+    if(weapon.currentAmmo === 0) {
+        attacker.reload(weapon);
+        return;
+    } else {
+        switch (weapon.firingMode) {
+            case FiringMode.SA:
+                weapon.currentAmmo -= 1;
+                break;
+            case FiringMode.BF:
+                weapon.currentAmmo -= 5;
+                break;
+        }
+    }
     const range = computeRange(attacker.getLocation(), defender.getLocation());
     const skill = attacker.getWeaponSkill(weapon);
     const dicePool = Math.max(skill + getWeaponModifier(weapon) + getRangeModifier(range, weapon.type), 0);
@@ -25,7 +38,7 @@ export function performRangedAttack(
         debug(`'${attacker.name}' misses attack against '${defender.name}'`);
         return;
     } else {
-        debug(`'${attacker.name}' hits with ${netHits} net hits`);
+        debug(`'${attacker.name}' hits with ${netHits} net hits - got ${attackHits} against defense of ${dodgeHits}`);
     }
     const DV = weapon.damage.DV + netHits;
     const damage = {...weapon.damage, DV};

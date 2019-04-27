@@ -26,32 +26,23 @@ export function getBoxesOfDamage(level: DamageLevel): number {
 
 export function resolveDamage(damage: SR3_Damage, firing: FiringMode, successes: number): SR3_Damage {
     let levelIncrease = Math.floor(successes / 2);
+    let power = damage.power;
     switch (firing) {
         case FiringMode.SA:
             break;
         case FiringMode.BF:
-            levelIncrease + 2;
-            // assume 6 round bursts
-            switch (damage.level) {
-                case DamageLevel.Light:
-                    return { ...damage, level: DamageLevel.Serious};
-                case DamageLevel.Moderate:
-                    return { ...damage, level: DamageLevel.Deadly};
-                case DamageLevel.Serious:
-                    return { ...damage, level: DamageLevel.Deadly, power: damage.power + 2};
-                case DamageLevel.Deadly:
-                    return { ...damage, level: DamageLevel.Deadly, power: damage.power + 4};
-                default:
-                    throw new Error(`Unknown damage level '${damage.level}'`);
-            }
+            // assume 5 round bursts
+            levelIncrease += 1;
+            power += 5;
+            break;
         default:
             throw new Error(`Unknown firing mode '${firing}'`);
     }
     const finalLevel = damage.level + levelIncrease;
     if (finalLevel <= 4) {
-        return { ...damage, level: finalLevel };
+        return { ...damage, level: finalLevel, power };
     } else {
-        const finalPower = damage.power + (finalLevel - 4) * 2;
+        const finalPower = power + (finalLevel - 4) * 2;
         return { ...damage, level: DamageLevel.Deadly, power: finalPower };
     }
 }

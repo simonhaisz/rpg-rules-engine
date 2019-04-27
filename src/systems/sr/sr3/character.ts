@@ -4,7 +4,6 @@ import { SR3_Weapon } from "./weapon";
 import { Armor, SR3_Damage, getEffectivePower, decreaseDamageLevel, DamageLevel, getBoxesOfDamage } from "./damage";
 import { rollSuccesses } from "./dice";
 import { SR3_World } from "./world";
-import { computeRange } from "../../../core/world";
 import { performRangedAttack } from "./combat";
 import { SR_Character, Skills } from "../character";
 import { rollTotal } from "../dice";
@@ -30,6 +29,7 @@ export class SR3_Character extends SR_Character {
     readonly weapons: SR3_Weapon[];
     readonly armor: Armor;
     private _combatPool = -1;
+    private _ammoUsed = 0;
 
     constructor(
         world: SR3_World,
@@ -120,6 +120,12 @@ export class SR3_Character extends SR_Character {
                 debug(`'${this.name}' takes ${boxesOfDamage} boxes of Stun damage`);
                 break;
         }
+    }
+
+    reload(weapon: SR3_Weapon) {
+        weapon.currentAmmo = weapon.maxAmmo;
+        this._ammoUsed += weapon.maxAmmo;
+        debug(`'${this.name}' reloading, fired ${this._ammoUsed} rounds in total`);
     }
 
     getWeaponSkill(weapon: SR3_Weapon): number {

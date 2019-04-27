@@ -28,6 +28,7 @@ export class SR5_Character extends SR_Character {
     readonly initiativeDice: number;
     readonly weapons: SR5_Weapon[];
     readonly armor: number;
+    private _ammoUsed = 0;
 
     constructor(
         world: SR5_World,
@@ -59,6 +60,8 @@ export class SR5_Character extends SR_Character {
             this.attributes.Intuition +
             this.initiativeBonus +
             rollTotal(this.initiativeDice);
+
+        debug(`name: ${this.name} rolled ${this.initiative} for initiative`)
     }
 
     newPhase() {
@@ -120,6 +123,11 @@ export class SR5_Character extends SR_Character {
         }
     }
 
+    reload(weapon: SR5_Weapon) {
+        weapon.currentAmmo = weapon.maxAmmo;
+        this._ammoUsed += weapon.maxAmmo;
+        debug(`'${this.name}' reloading, fired ${this._ammoUsed} rounds in total`);
+    }
     getWeaponSkill(weapon: SR5_Weapon): number {
         switch (weapon.type) {
             case WeaponType.LightPistol:

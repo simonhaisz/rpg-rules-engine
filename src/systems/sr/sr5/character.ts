@@ -61,7 +61,7 @@ export class SR5_Character extends SR_Character {
             this.initiativeBonus +
             rollTotal(this.initiativeDice);
 
-        debug(`name: ${this.name} rolled ${this.initiative} for initiative`)
+        debug(`'${this.name}' rolled ${this.initiative} for initiative`)
     }
 
     newPhase() {
@@ -75,16 +75,16 @@ export class SR5_Character extends SR_Character {
 
     performAction() {
         if (!this.canAct()) {
-            debug(`${this.name} cannot perform and action because they can no longer act`);
+            debug(`'${this.name}' cannot perform an action because they can no longer act`);
             return;
         }
         if (this.weapons.length === 0) {
-            error(`${this.name} has no weapons`)
+            error(`'${this.name}' has no weapons`)
             return;
         }
         const nearestOpponent = this.findNearestOpponent();
         if (nearestOpponent === null) {
-            debug(`No opponents left, doing nothing`);
+            debug(`'${this.name}' has no opponents left, doing nothing`);
             return;
         }
         performRangedAttack(this, <SR5_Character>nearestOpponent, this.weapons[0]);

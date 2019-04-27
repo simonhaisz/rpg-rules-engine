@@ -3,32 +3,35 @@ import { SR5_1_Weapon, SR5_1_WeaponType } from "./weapon";
 import { WeaponModification, FiringMode } from "../weapon";
 import { computeRange } from "../../../core/world";
 import { debug } from "../../../log";
-import { getRangeThreshold } from "./range";
+import { getRangeThreshold, AimType } from "./range";
 import { SR5_rollHits } from "../sr5/dice";
 
 export function performRangedAttack(
     attacker: SR5_1_Character,
     defender: SR5_1_Character,
-    weapon: SR5_1_Weapon
+    weapon: SR5_1_Weapon,
+    aiming: AimType
     ) {
     if (weapon.currentAmmo === 0) {
         attacker.reload(weapon);
         return;
-    } else {
-        switch (weapon.firingMode) {
-            case FiringMode.SA:
-                weapon.currentAmmo -= 1;
-                break;
-            case FiringMode.BF:
-                weapon.currentAmmo -= 5;
-                break;
-        }
+    }
+    let firingMode = weapon.firingMode;
+    if (aiming === AimType.Aimed || AimType.Precision) {
+        firingMode = FiringMode.SA;
+    }
+    switch (firingMode) {
+        case FiringMode.SA:
+            weapon.currentAmmo -= 1;
+            break;
+        case FiringMode.BF:
+            weapon.currentAmmo -= 5;
+            break;
     }
     const range = computeRange(attacker.getLocation(), defender.getLocation());
-    // assume everyone is dodging
-    const threshold = getRangeThreshold(range) + 1;
+    const threshold = getRangeThreshold(range, aiming) + (defender.isDodging() ? 1 : 0);
     const skill = attacker.attributes.Agility + attacker.getWeaponSkill(weapon);
-    const dicePool = skill + getWeaponModifier(weapon);
+    const dicePool = skill + getWeaponModifier(weapon, firingMode);
     if (dicePool === 0) {
         debug(`'${attacker.name}' dice pool reduced to 0, cannot attack`);
         return;
@@ -43,7 +46,7 @@ export function performRangedAttack(
         return;
     }
     let DV = weapon.damage.DV;
-    if (weapon.firingMode === FiringMode.BF && netHits > 0) {
+    if (firingMode === FiringMode.BF && netHits > 0) {
         // assume 5 round bursts
         DV += Math.min(netHits, 2);
     }
@@ -52,7 +55,7 @@ export function performRangedAttack(
     defender.resistDamage(damage);
 }
 
-function getWeaponModifier(weapon: SR5_1_Weapon): number {
+function getWeaponModifier(weapon: SR5_1_Weapon, firingMode: FiringMode): number {
     let modification = 0;
     if (weapon.modifications) {
         if (weapon.modifications.includes(WeaponModification.Smartlink)) {
@@ -61,7 +64,7 @@ function getWeaponModifier(weapon: SR5_1_Weapon): number {
             modification += 2;
         }
     }
-    switch (weapon.firingMode) {
+    switch (firingMode) {
         case FiringMode.SA:
             // the googles do nothing
             break;

@@ -4,7 +4,7 @@ import { SR5_1_Weapon, AresPredator, BrowningHighPower, HK_227, ColtM23 } from "
 import { Attributes } from "../sr5/character";
 import { CharacterType } from "../../../core/character";
 import { WeaponModification } from "../weapon";
-import { Jacket, Vest, Clothing, Security } from "./armor";
+import { Jacket, Vest, Clothing, MilitaryVest, SecurityVest } from "./armor";
 
 export class SR5_1_World extends World<SR5_1_Character> {
 }
@@ -78,16 +78,16 @@ function createRunner(world: SR5_1_World, weapon: SR5_1_Weapon, armor: number): 
 export function createSR5_1_StreetWorld(): SR5_1_World {
     const world = new SR5_1_World();
 
-    const runner = createRunner(world, AresPredator, Vest);
+    const runner = createRunner(world, AresPredator, Jacket);
     runner.move({ x: 0, y: 0, z: 0 });
 
-    const goon1 = createGoon(world, 1, BrowningHighPower, Clothing);
+    const goon1 = createGoon(world, 1, BrowningHighPower, Vest);
     goon1.move({ x: 5, y: 0, z: 0 });
 
-    const goon2 = createGoon(world, 2, BrowningHighPower, Clothing);
+    const goon2 = createGoon(world, 2, BrowningHighPower, Vest);
     goon2.move({ x: 20, y: 0, z: 0 });
 
-    const goon3 = createGoon(world, 3, BrowningHighPower, Clothing);
+    const goon3 = createGoon(world, 3, BrowningHighPower, Vest);
     goon3.move({ x: 50, y: 0, z: 0 });
 
     return world;
@@ -96,16 +96,16 @@ export function createSR5_1_StreetWorld(): SR5_1_World {
 export function createSR5_1_OrganizedCrimeWorld(): SR5_1_World {
     const world = new SR5_1_World();
 
-    const runner = createRunner(world, HK_227, Jacket);
+    const runner = createRunner(world, HK_227, SecurityVest);
     runner.move({ x: 0, y: 0, z: 0 });
 
-    const goon1 = createGoon(world, 1, AresPredator, Vest);
+    const goon1 = createGoon(world, 1, AresPredator, Jacket);
     goon1.move({ x: 5, y: 0, z: 0 });
 
-    const goon2 = createGoon(world, 2, AresPredator, Vest);
+    const goon2 = createGoon(world, 2, AresPredator, Jacket);
     goon2.move({ x: 20, y: 0, z: 0 });
 
-    const goon3 = createGoon(world, 3, AresPredator, Vest);
+    const goon3 = createGoon(world, 3, AresPredator, Jacket);
     goon3.move({ x: 50, y: 0, z: 0 });
 
     return world;
@@ -114,16 +114,16 @@ export function createSR5_1_OrganizedCrimeWorld(): SR5_1_World {
 export function createSR5_1_CorporateWorld(): SR5_1_World {
     const world = new SR5_1_World();
 
-    const runner = createRunner(world, ColtM23, Security);
+    const runner = createRunner(world, ColtM23, MilitaryVest);
     runner.move({ x: 0, y: 0, z: 0 });
 
-    const goon1 = createGoon(world, 1, HK_227, Jacket);
+    const goon1 = createGoon(world, 1, HK_227, SecurityVest);
     goon1.move({ x: 5, y: 0, z: 0 });
 
-    const goon2 = createGoon(world, 2, HK_227, Jacket);
+    const goon2 = createGoon(world, 2, HK_227, SecurityVest);
     goon2.move({ x: 20, y: 0, z: 0 });
 
-    const goon3 = createGoon(world, 3, HK_227, Jacket);
+    const goon3 = createGoon(world, 3, HK_227, SecurityVest);
     goon3.move({ x: 50, y: 0, z: 0 });
 
     return world;

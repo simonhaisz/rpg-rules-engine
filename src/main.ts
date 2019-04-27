@@ -9,7 +9,7 @@ import { createSR5_1_GameMaster } from "./systems/sr/sr5.1/gamemaster";
 
 setLogLevel(LogLevel.Error);
 
-const iterations = 10000;
+const iterations = 100000;
 
 const systemResults = new Map<string,SimuationResults>();
 

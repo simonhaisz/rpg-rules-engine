@@ -9,6 +9,8 @@ import { rollTotal } from "../dice";
 import { SR5_1_Damage } from "./damage";
 import { DamageType } from "../damage";
 import { SR5_rollHits } from "../sr5/dice";
+import { computeRange } from "../../../core/world";
+import { AimType } from "./range";
 
 export class SR5_1_Character extends SR_Character {
     readonly sr5World: SR5_1_World;
@@ -18,6 +20,8 @@ export class SR5_1_Character extends SR_Character {
     readonly weapons: SR5_1_Weapon[];
     readonly armor: number;
     private _ammoUsed = 0;
+    private _dodging = false;
+    private _aiming = false;
 
     constructor(
         world: SR5_1_World,
@@ -50,7 +54,7 @@ export class SR5_1_Character extends SR_Character {
             this.initiativeBonus +
             rollTotal(this.initiativeDice);
 
-        debug(`name: ${this.name} rolled ${this.initiative} for initiative`)
+        debug(`'${this.name}' rolled ${this.initiative} for initiative`)
     }
 
     newPhase() {
@@ -64,24 +68,45 @@ export class SR5_1_Character extends SR_Character {
 
     performAction() {
         if (!this.canAct()) {
-            debug(`${this.name} cannot perform and action because they can no longer act`);
+            debug(`'${this.name}' cannot perform an action because they can no longer act`);
             return;
         }
         if (this.weapons.length === 0) {
-            error(`${this.name} has no weapons`)
+            error(`'${this.name}' has no weapons`)
             return;
         }
         const nearestOpponent = this.findNearestOpponent();
         if (nearestOpponent === null) {
-            debug(`No opponents left, doing nothing`);
+            debug(`'${this.name}' has no opponents left, doing nothing`);
             return;
         }
-        performRangedAttack(this, <SR5_1_Character>nearestOpponent, this.weapons[0]);
+        const distance = computeRange(this.getLocation(), nearestOpponent.getLocation());
+        let aiming: AimType
+        if (distance <= 20) {
+            this._dodging = true;
+            aiming = AimType.Snap;
+        } else if (distance <= 100) {
+            this._dodging = false;
+            aiming = AimType.Aimed;
+        } else {
+            this._dodging = false;
+            if (this._aiming) {
+                aiming = AimType.Precision;
+            } else {
+                debug(`'${this.name}' taking action to aim, as target is ${distance} meters away`);
+                return;
+            }
+        }
+        performRangedAttack(this, <SR5_1_Character>nearestOpponent, this.weapons[0], aiming);
+    }
+
+    isDodging(): boolean {
+        return this._dodging;
     }
 
     resistDamage(damage: SR5_1_Damage) {
         // TODO: Handle the auto-1's from negative armor
-        const effectiveArmor = Math.max(this.armor + damage.AP, 0);
+        const effectiveArmor = this.armor + damage.AP;
         const dicePool = this.attributes.Body + effectiveArmor;
         let damageType = damage.Type;
         if (damageType === DamageType.Physical && effectiveArmor > 0) {
@@ -89,7 +114,7 @@ export class SR5_1_Character extends SR_Character {
             debug(`Damage Type reduced from Physical to Stun due to effective armor`);
         }
         const hits = SR5_rollHits(dicePool);
-        const boxesOfDamage = Math.max(damage.DV, - hits, 0);
+        const boxesOfDamage = Math.max(damage.DV - hits, 0);
         if (boxesOfDamage === 0) {
             debug(`${this.name} takes no damageg`);
             return;
